@@ -1,0 +1,5 @@
+# ratchet-parity-corpus.json is a BYTE-PINNED answer sheet: the mint's self-test M13 regenerates it and compares
+# byte-for-byte, and the Rust differential (src-tauri/src/ratchet_parity_differential.rs) reads the same bytes.
+# `core.autocrlf=true` would check it out CRLF while the blob is LF — M13 goes red for a reason that is not drift
+# (same pin as scripts/.gitattributes and the evidence dir). Do not remove.
+ratchet-parity-corpus.json -text

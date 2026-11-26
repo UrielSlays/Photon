@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" width="1200" height="300" role="img" aria-labelledby="t d">
+  <title id="t">Photon</title>
+  <desc id="d">Photon: a fast, local-first desktop mail client for clearing huge inboxes.</desc>
+  <g transform="translate(150 108)" fill="none" stroke="#1a1c1f" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M-34 36 L0 -30 L34 36 Z"/>
+    <line x1="-92" y1="22" x2="-17" y2="2"/>
+    <line x1="17" y1="2" x2="84" y2="-26" opacity="0.55"/>
+    <line x1="19" y1="9" x2="90" y2="9" stroke="#c98a00"/>
+    <line x1="22" y1="16" x2="84" y2="44" opacity="0.55"/>
+  </g>
+  <text x="270" y="140" fill="#1a1c1f" font-family="Inter, 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="92" font-weight="700" letter-spacing="-2">Photon</text>
+  <text x="272" y="196" fill="#555b63" font-family="Inter, 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="27" font-weight="400">A fast, local-first desktop mail client for clearing huge inboxes.</text>
+</svg>

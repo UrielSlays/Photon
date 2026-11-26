@@ -1,0 +1,333 @@
+/* "Command instrument" minimum style: dark-first, near-black charcoal ground,
+   accent colors that pop, borders not shadows, restrained motion. No remote fonts/assets (the
+   CSP forbids remote origins — src-tauri/tauri.conf.json). */
+
+:root {
+  --charcoal: #1a1c1f;
+  --charcoal-raised: #232629;
+  --border: #33373c;
+  --text: #e8e8e6;
+  --text-dim: #9a9fa6;
+  --tier-yellow: #e8b93f;
+  --unread-accent: #4fa3ff;
+  --danger: #d95d5d;
+
+  color-scheme: dark;
+  font-family: system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--text);
+  background-color: var(--charcoal);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background-color: var(--charcoal);
+  color: var(--text);
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ================================================================================
+   BLACK banner — full-width black band, white text, unmistakable (a severed state
+   renders as the unmistakable BLACK banner, status-only).
+   ================================================================================ */
+.banner-region:empty {
+  display: none;
+}
+
+.black-banner {
+  background-color: #000000;
+  color: #ffffff;
+  font-weight: 700;
+  padding: 0.75em 1em;
+  text-align: center;
+  border-bottom: 2px solid var(--danger);
+}
+
+/* ================================================================================
+   Status bar
+   ================================================================================ */
+.status-bar {
+  display: flex;
+  gap: 1.25em;
+  padding: 0.5em 1em;
+  background-color: var(--charcoal-raised);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.85em;
+  color: var(--text-dim);
+}
+
+.status-configured {
+  color: var(--unread-accent);
+}
+
+.status-unconfigured {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+/* ================================================================================
+   List + reading pane layout
+   ================================================================================ */
+.app-body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+.list-scroll {
+  flex: 1 1 55%;
+  overflow-y: auto;
+  border-right: 1px solid var(--border);
+  position: relative;
+}
+
+.list-inner {
+  position: relative;
+  width: 100%;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1.5em 1.5em 14em 1fr auto;
+  align-items: center;
+  gap: 0.75em;
+  padding: 0 1em;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+}
+
+.row.unread {
+  font-weight: 700;
+}
+
+.row.unread .unread-dot::before {
+  content: "";
+  display: inline-block;
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  background-color: var(--unread-accent);
+}
+
+.row.selected {
+  background-color: rgba(232, 185, 63, 0.12);
+}
+
+.row.focused {
+  outline: 2px solid var(--tier-yellow);
+  outline-offset: -2px;
+}
+
+.star {
+  color: var(--tier-yellow);
+}
+
+.identity {
+  display: flex;
+  gap: 0.5em;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* The bidi isolate — the untrusted display name never visually bleeds into the address that
+   follows it (the spoof residual). EVERY `bdi` gets the isolate, and only the
+   isolate: the inbox row's compact clipping lives on `.from-name` alone, so no truncation rides
+   this generic selector onto the plan review's `bdi` cells (the
+   sender cell and each sender domain are `bdi`). */
+bdi {
+  unicode-bidi: isolate;
+}
+
+.from-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.from-addr {
+  color: var(--text-dim);
+  font-size: 0.9em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.subject {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.date {
+  color: var(--text-dim);
+  font-size: 0.85em;
+  white-space: nowrap;
+}
+
+/* ================================================================================
+   Reading pane
+   ================================================================================ */
+.reading-pane {
+  flex: 1 1 45%;
+  overflow-y: auto;
+  padding: 1em;
+}
+
+.reading-pane-body {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: inherit;
+}
+
+.reading-pane-no-body,
+.reading-pane-empty {
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+.reading-pane-truncated,
+.reading-pane-attachments {
+  color: var(--text-dim);
+  font-size: 0.9em;
+}
+
+.copy-body-button,
+.toast-undo-button {
+  background-color: transparent;
+  border: 1px solid var(--tier-yellow);
+  color: var(--tier-yellow);
+  padding: 0.4em 0.9em;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.copy-body-button:hover,
+.toast-undo-button:hover {
+  background-color: rgba(232, 185, 63, 0.12);
+}
+
+/* ================================================================================
+   Freshness footer + toast
+   ================================================================================ */
+.freshness-footer:empty {
+  display: none;
+}
+
+.freshness-line {
+  margin: 0;
+  padding: 0.4em 1em;
+  color: var(--text-dim);
+  font-size: 0.85em;
+  border-top: 1px solid var(--border);
+}
+
+.toast-region {
+  position: fixed;
+  bottom: 1em;
+  right: 1em;
+  max-width: 24em;
+}
+
+.toast {
+  background-color: var(--charcoal-raised);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--tier-yellow);
+  padding: 0.75em 1em;
+  border-radius: 4px;
+  margin-top: 0.5em;
+}
+
+.toast-message {
+  margin: 0 0 0.35em;
+}
+
+.toast-stale-line {
+  margin: 0 0 0.5em;
+  color: var(--text-dim);
+  font-size: 0.85em;
+}
+
+.toast-refusal-busy,
+.toast-refusal-session_unconfigured,
+.toast-refusal-refused,
+.toast-refusal-store,
+.toast-refusal-internal {
+  border-left-color: var(--danger);
+}
+
+/* ================================================================================
+   The plan review: a bordered panel over the list (borders, not
+   shadows). Empty when no review is open.
+   ================================================================================ */
+.plan-review:empty {
+  display: none;
+}
+
+.plan-review {
+  position: fixed;
+  top: 3em;
+  left: 10%;
+  right: 10%;
+  max-height: 80vh;
+  overflow-y: auto;
+  z-index: 10;
+  padding: 1em;
+  background-color: var(--charcoal-raised);
+  border: 1px solid var(--border);
+}
+
+.plan-header {
+  margin: 0 0 0.5em;
+  font-size: 1.1em;
+}
+
+.plan-warning {
+  color: var(--danger);
+}
+
+.plan-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0.5em;
+  padding: 0.25em 0;
+  border-bottom: 1px solid var(--border);
+}
+
+/* THE APPROVAL FIELDS ARE LOSSLESS. The review is what
+   a human approves (an "inspectable exact member list"; the approval stands on the
+   rendered information) and the engine commits each frozen value WHOLE — so nothing in the review
+   may clip: no rule in this file that reaches the review carries `text-overflow`, a hidden or
+   clipped `overflow`, a no-wrap `white-space` or a line clamp, and every text in it is set to WRAP
+   (at any character when it has to), so this stylesheet clips no character of a sender, a subject,
+   a domain or the warning; a review taller than the panel scrolls inside `.plan-review`. No compact
+   row, so no disclosure control. Witness: `src/__tests__/plan-review-dom.test.ts`'s lossless-fields
+   block (the selector set is read from `render.ts`, never a hand list) — it checks these
+   PROPERTIES; no test lays the review out or measures a pixel. */
+.plan-review-panel,
+.plan-review-panel * {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.plan-controls {
+  display: flex;
+  gap: 0.5em;
+  margin-top: 1em;
+}
+
+.toast-detail {
+  margin: 0.25em 0 0;
+  color: var(--text-dim);
+}

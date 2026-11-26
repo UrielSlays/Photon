@@ -1,0 +1,54 @@
+PROPRIETARY. ALL RIGHTS RESERVED.
+
+Copyright (c) 2026 Moonwalker Inc. All rights reserved.
+
+This repository and everything in it (the "Software") is the proprietary
+property of Moonwalker Inc., a Mississippi corporation, which wholly owns it.
+The Software includes, without limitation: source code and object code; tests
+and test cases; schemas and interfaces; designs, architecture, algorithms and
+logic; documentation and comments; and the commit history.
+
+The Software is made publicly visible for review only. It is not open source.
+
+NO LICENSE IS GRANTED. No license or other right, express or implied, by
+estoppel or otherwise, is granted to any person under any copyright, patent,
+trademark or other intellectual property right of Moonwalker Inc. Viewing
+this repository is not a license and does not transfer any right, title or
+interest in the Software. The only rights anyone has are the limited rights
+to view and fork this repository on github.com that GitHub's Terms of Service
+require for public repositories.
+
+Without the prior written permission of Moonwalker Inc., signed by an
+authorized officer, no person may:
+
+  1. copy, reproduce, download, retain or store the Software or any part of
+     it, except as GitHub's Terms of Service permit on github.com;
+  2. modify, translate, port, adapt or re-implement the Software, or create
+     derivative works of it, in any programming language, including by
+     reproducing its designs, logic, algorithms, interfaces, schemas or test
+     cases in other code;
+  3. publish, distribute, sublicense, sell, lease, lend or otherwise make the
+     Software or any part of it available to anyone, including by placing any
+     part of it, or any port or derivative of it, in another repository or
+     under any open-source or other license;
+  4. use the Software, or any information derived from it, to build, train,
+     evaluate or improve any other product, service, model or project;
+  5. reverse engineer, decompile or disassemble any part of the Software; or
+  6. remove, alter or obscure this notice.
+
+Unauthorized copying, use or distribution of the Software may violate the
+U.S. Copyright Act (17 U.S.C. 101 et seq.) and may result in civil and
+criminal liability.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED. IN NO EVENT SHALL MOONWALKER INC. BE LIABLE FOR ANY CLAIM, DAMAGES
+OR OTHER LIABILITY ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE.
+
+Third-party components included in or used by the Software remain under
+their own licenses. Nothing in this notice restricts any right those licenses
+grant in those third-party components.
+
+This notice governs over any statement to the contrary anywhere else in this
+repository.
+
+Requests for permission: contact@moonwalkercorp.com

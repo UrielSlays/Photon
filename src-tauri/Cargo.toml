@@ -1,0 +1,90 @@
+[package]
+name = "photon-app"
+version = "0.1.0"
+description = "Photon — the minimal daily-drivable mail client shell"
+authors = ["Moonwalker Inc."]
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+# The `_lib` suffix may seem redundant but it is necessary
+# to make the lib name unique and wouldn't conflict with the bin name.
+# This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
+name = "photon_app_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+serde = { version = "1", features = ["derive"] }
+# `raw_value`: the credential's `grant` member is held as a `RawValue` so the
+# typed `GrantProvenance` reader sees the member stream the file actually wrote. A
+# `serde_json::Value` is a MAP and collapses a repeated member to its last occurrence before any
+# typed reader can refuse it — a pre-parse transform voiding the discriminator. Feature only, no
+# new crate in the tree.
+serde_json = { version = "1", features = ["raw_value"] }
+
+# The engine + both live transports. Path deps, not versions: these crates are
+# unpublished and move with this repo. The exclusion in the root `Cargo.toml` is what keeps the
+# Tauri dependency tree out of the lean engine build.
+aruna = { path = "../crates/aruna" }
+aruna-gmail = { path = "../crates/aruna-gmail" }
+aruna-jmap = { path = "../crates/aruna-jmap" }
+
+# The session stamp's collision-resistant nonce is minted via SQLite's own
+# `randomblob` — the SAME idiom `aruna` already uses everywhere for opaque ids
+# (`crates/aruna/src/read_coordinator.rs:695`). `aruna` already pulls rusqlite 0.40 (bundled) in
+# transitively at this exact version, so this is not a new third-party dependency being compiled —
+# it is the existing one made a direct dep, so `lib.rs` can call it without punching through
+# `aruna`'s API for something that is not the engine's concern.
+rusqlite = { version = "0.40", features = ["bundled"] }
+
+# The token-endpoint exchange (`src/token_refresh.rs`). SAME version and SAME feature
+# discipline as `aruna-gmail`'s client (`crates/aruna-gmail/Cargo.toml`), so the two HTTP surfaces
+# in this tree cannot drift into two postures: `blocking` (the refresh critical section runs inside
+# one `spawn_blocking` closure, never on the async runtime) and `rustls` (no system OpenSSL
+# dependency). NOT a new tree: reqwest already compiles here transitively via `aruna-gmail`; this
+# makes it a direct dep so `token_refresh.rs` can build its own client with its own timeouts,
+# `.no_proxy()` and `redirect::Policy::none()`. `json` is deliberately absent — the token endpoint
+# takes a FORM body and its reply is parsed by our own typed contract, not by a serde round-trip.
+# `form` is the one feature `aruna-gmail` does not carry, and it is exactly why: RFC 6749 §6's
+# request IS `application/x-www-form-urlencoded`, so the encoder is the contract, not a convenience.
+reqwest = { version = "0.13", default-features = false, features = ["blocking", "rustls", "form"] }
+
+# The credential writer: same-directory temp + fsync-before-rename + atomic rename + Unix
+# directory-fd path stability,
+# in exchange for deleting a hand-rolled writer and its witness surface. Cost: two
+# direct dependencies (`rand` + `nix`) into the persistence seam. `preserve_mode(false)` +
+# `mode(0o600)` are set at the call site — the crate's DEFAULT preserves an existing file's mode,
+# which would defeat narrowing a pre-existing 0644 credential.
+atomic-write-file = "0.3"
+
+# `FileGen`, the credential file's generation, is a CONTENT digest so a same-size,
+# timestamp-restored replacement is still detected. SHA-384 by design:
+# strict SHA-384 everywhere we control the format. Already in this workspace's tree via
+# `aruna` (Cargo.lock 0.10.x), reused, not a new third-party dependency.
+sha2 = "0.10"
+
+# The OS credential store holds the root commitment key (ADR-P010 — keyring/DPAPI,
+# never SQLite, never plaintext). Default features = `v1` (keyring 4.2.0's manifest) = Windows
+# Credential Manager + macOS Keychain + Linux secret-service; the Linux leg is zbus (pure-Rust
+# D-Bus on async-io: no tokio, no libdbus system package). Shell-only: the engine crate stays lean
+# (workspace rule).
+keyring = "4"
+
+# NO `tauri-plugin-opener`: the opener plugin is dropped along with its capability, since a plugin that
+# is still compiled in is a door one builder line away from being open, and `tests/surface_contract.rs`
+# reads THIS file to prove it is gone.
+
+[dev-dependencies]
+# The engine's ONE temp-path guard (`aruna::test_temp`) every test here
+# mints its temp paths through; `test-support` compiles it in for test builds only (resolver 2 —
+# the edition-2021 default — unifies a dev-dependency's features into test builds only).
+aruna = { path = "../crates/aruna", features = ["test-support"] }
+# keyring-core's in-memory `mock` credential (no feature needed) drives
+# `KeyringCustody`'s load/store contract in CI, where no OS credential store runs. Not a new crate:
+# `keyring` 4 already compiles keyring-core 1.0 into this tree.
+keyring-core = "1"

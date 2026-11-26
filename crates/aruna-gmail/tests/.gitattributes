@@ -1,0 +1,6 @@
+# live_readside.rs is a DIGEST-VERIFIED source: the closure run banks sanitizer source_sha384
+# over this file's on-disk bytes (the sanitizer identity in the evidence manifest), and an
+# auditor reproduces it from the recorded commit's blob (LF). core.autocrlf=true would check
+# it out CRLF — a digest no commit can reproduce while `git status` stays clean (codex r10
+# P1-1; the same class as scripts/.gitattributes' helper pin). Do not remove.
+live_readside.rs -text

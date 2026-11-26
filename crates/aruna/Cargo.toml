@@ -1,0 +1,76 @@
+[package]
+name = "aruna"
+version = "0.1.0"
+edition = "2021"
+description = "Aruna — the Photon engine (drives the surface): command bus, intent log, store, connectors. No UI/Tauri deps."
+
+[dependencies]
+# Embedded SQLite system-of-record. `bundled` compiles SQLite from source — no system lib,
+# portable to low-end hardware (D1/D2). Synchronous; no async runtime (vs sqlx). Chosen by
+# the M0 build-rule fold, 2026-06-21.
+rusqlite = { version = "0.40", features = ["bundled"] }
+# Typed JMAP request/response model (M0 connector). Typed structs over hand-rolled JSON strings
+# (2026-06-24); `serde_json` backs the `*/set` shape-conformance check.
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+# (design §5.1): the ONE new hash site — the sever witness digest, SHA-384 (the
+# posture's native digest; provenance/attestation-binding bucket). Already a workspace
+# dependency via `aruna-gmail` (Cargo.lock 0.10.9), so no NEW external dependency enters the
+# tree.
+sha2 = "0.10"
+# (design §2, the RAW-HTML-FENCE fold): the NAMED converter behind
+# `crate::body_view` — html5ever-backed HTML→plain-text. "A vetted library" is now a crate
+# with a version and an advisory check, not an adjective.
+#
+# EXACT-pinned (`=`), not caret: this parser is the one component in the tree that eats
+# untrusted remote bytes by design, so moving it must be a deliberate act that re-runs the
+# advisory check — never a silent `cargo update`.
+#
+# RustSec advisory-db check, 2026-08-09 (github.com/rustsec/advisory-db @ main, `crates/<name>`
+# queried per crate; control query `crates/ammonia` returned its 6 known advisories, so a
+# negative is a real negative and not a broken endpoint):
+#   html2text, html5ever, markup5ever, string_cache, string_cache_codegen, tendril, web_atoms,
+#   parking_lot, parking_lot_core, phf{,_codegen,_generator,_shared}, siphasher,
+#   precomputed-hash, new_debug_unreachable, redox_syscall, scopeguard, unicode-width — NONE.
+#   lock_api — RUSTSEC-2020-0070 (unsound Send/Sync on guard types), patched `>= 0.4.2`;
+#   Cargo.lock resolves 0.4.14, so NOT affected.
+html2text = "=0.17.1"
+# The ONE keyed commitment scheme (`mw.commitment.v1`, HMAC-SHA-384 —
+# a reference implementation, ported byte-for-byte). `hmac` 0.12 pairs with the `sha2` 0.10 already in
+# the tree (same `digest` 0.10 generation); no second digest family enters. Census: bucket (b).
+hmac = "0.12"
+# The scheme's per-event 128-bit randomizer (AM-4.3) needs OS entropy. `getrandom` 0.3 is ALREADY a
+# transitive dependency of this workspace (Cargo.lock) — promoted to direct, no new tree.
+getrandom = "0.3"
+# (the display-safety predicate widened to
+# Default_Ignorable_Code_Point, keyed on NFC): not a new dependency tree —
+# both crates are ALREADY in `Cargo.lock` (2.2.0) via `idna` 1.1.0 <- `url` 2.5.8 <- `reqwest`
+# 0.13 (aruna-gmail's transitive tree), promoted here to a direct dependency exactly as
+# `getrandom` was above. `default-features = false` + `compiled_data` only, matching
+# `idna_adapter`'s own declaration of these two crates byte-for-byte (its Cargo.toml) — verified
+# by `cargo add`: `Cargo.lock` gained ONLY the two new dependency EDGES from this crate, no new
+# package entries (`git diff Cargo.lock` after the add: `+ "icu_normalizer"` / `+ "icu_properties"`
+# under `aruna`'s own `dependencies` list, nothing else).
+icu_properties = { version = "2.2", default-features = false, features = ["compiled_data"] }
+icu_normalizer = { version = "2.2", default-features = false, features = ["compiled_data"] }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+# The store-open install primitive must reach renameat2 as a RAW
+# SYSCALL — glibc's wrapper symbol exists only from 2.28, so a link-time import fails at
+# dynamic load on older systems (Rust's GNU baseline is 2.17) and the ENOSYS fallback
+# could never run. libc carries syscall() + the per-arch SYS_renameat2 numbers; it is
+# already in this workspace's dependency tree (0.2.186 in Cargo.lock).
+libc = "0.2"
+
+[features]
+# TEST-ONLY. Compiles `aruna::test_temp` — the one Drop guard every test
+# in this workspace and in the `src-tauri` shell mints its temp paths through. Nothing in a product
+# build enables it: only the dev-dependency lines below (and in `aruna-jmap`, `aruna-gmail`,
+# `src-tauri`) do, and Cargo's resolver 2 unifies a dev-dependency's features into test builds only.
+test-support = []
+
+[dev-dependencies]
+mail-parser = "0.11.9"
+# The self dev-dependency: `tests/*.rs` link `aruna` as an external crate, so they reach
+# `aruna::test_temp` only with `test-support` on — this line turns it on for them.
+aruna = { path = ".", features = ["test-support"] }

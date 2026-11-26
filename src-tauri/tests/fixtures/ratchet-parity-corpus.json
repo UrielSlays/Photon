@@ -1,0 +1,340 @@
+{
+  "schema": "photon.ratchet-parity-corpus.v1",
+  "cases": [
+    {
+      "name": "boundary-bare-null",
+      "bytes_b64": "bnVsbA==",
+      "python": "refuse:not-an-object"
+    },
+    {
+      "name": "boundary-bare-number",
+      "bytes_b64": "Nw==",
+      "python": "refuse:not-an-object"
+    },
+    {
+      "name": "boundary-crlf-around-document",
+      "bytes_b64": "DQp7ImdyYW50X2dlbmVyYXRpb24iOjd9DQo=",
+      "python": "accept:7"
+    },
+    {
+      "name": "boundary-empty-file",
+      "bytes_b64": "",
+      "python": "refuse:not-json"
+    },
+    {
+      "name": "boundary-empty-object",
+      "bytes_b64": "e30=",
+      "python": "refuse:absent-member"
+    },
+    {
+      "name": "boundary-escaped-duplicate-member",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjo5LCJcdTAwNjdyYW50X2dlbmVyYXRpb24iOjh9",
+      "python": "refuse:repeated-member"
+    },
+    {
+      "name": "boundary-escaped-member-name",
+      "bytes_b64": "eyJcdTAwNjdyYW50X2dlbmVyYXRpb24iOjQyfQ==",
+      "python": "accept:42"
+    },
+    {
+      "name": "boundary-fullwidth-digit-seven",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjrvvJd9",
+      "python": "refuse:not-json"
+    },
+    {
+      "name": "boundary-nul-after-document",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjo3fQA=",
+      "python": "refuse:not-json"
+    },
+    {
+      "name": "boundary-python-underscore-literal",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjogMV8wMDB9",
+      "python": "refuse:not-json"
+    },
+    {
+      "name": "boundary-spaced-seven",
+      "bytes_b64": "IHsgImdyYW50X2dlbmVyYXRpb24iIDogNyB9IA==",
+      "python": "accept:7"
+    },
+    {
+      "name": "boundary-tight-array-wrapped",
+      "bytes_b64": "W3siZ3JhbnRfZ2VuZXJhdGlvbiI6N31d",
+      "python": "refuse:not-an-object"
+    },
+    {
+      "name": "boundary-tight-exponent",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjoxZTJ9",
+      "python": "refuse:not-u64"
+    },
+    {
+      "name": "boundary-tight-float",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjoxLjB9",
+      "python": "refuse:not-u64"
+    },
+    {
+      "name": "boundary-tight-infinity",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjpJbmZpbml0eX0=",
+      "python": "refuse:not-u64"
+    },
+    {
+      "name": "boundary-tight-leading-plus",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjorMX0=",
+      "python": "refuse:not-json"
+    },
+    {
+      "name": "boundary-tight-leading-stowaway",
+      "bytes_b64": "eyJub3RlIjoxLCJncmFudF9nZW5lcmF0aW9uIjo3fQ==",
+      "python": "refuse:unknown-member"
+    },
+    {
+      "name": "boundary-tight-nan",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjpOYU59",
+      "python": "refuse:not-u64"
+    },
+    {
+      "name": "boundary-tight-negative-one",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjotMX0=",
+      "python": "refuse:not-u64"
+    },
+    {
+      "name": "boundary-tight-negative-zero",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjotMH0=",
+      "python": "refuse:not-u64"
+    },
+    {
+      "name": "boundary-tight-null-value",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjpudWxsfQ==",
+      "python": "refuse:not-u64"
+    },
+    {
+      "name": "boundary-tight-repeat-negative-zero-then-two",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjotMCwiZ3JhbnRfZ2VuZXJhdGlvbiI6Mn0=",
+      "python": "refuse:not-u64"
+    },
+    {
+      "name": "boundary-tight-repeat-seven-eight",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjo3LCJncmFudF9nZW5lcmF0aW9uIjo4fQ==",
+      "python": "refuse:repeated-member"
+    },
+    {
+      "name": "boundary-tight-repeat-two-then-negative-zero",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjoyLCJncmFudF9nZW5lcmF0aW9uIjotMH0=",
+      "python": "refuse:not-u64"
+    },
+    {
+      "name": "boundary-tight-seven",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjo3fQ==",
+      "python": "accept:7"
+    },
+    {
+      "name": "boundary-tight-seven-blank-line",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjo3fQoK",
+      "python": "accept:7"
+    },
+    {
+      "name": "boundary-tight-string-seven",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjoiNyJ9",
+      "python": "refuse:not-u64"
+    },
+    {
+      "name": "boundary-tight-trailing-stowaway",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjo3LCJub3RlIjoxfQ==",
+      "python": "refuse:unknown-member"
+    },
+    {
+      "name": "boundary-tight-true",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjp0cnVlfQ==",
+      "python": "refuse:not-u64"
+    },
+    {
+      "name": "boundary-tight-u64-max",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjoxODQ0Njc0NDA3MzcwOTU1MTYxNX0=",
+      "python": "accept:18446744073709551615"
+    },
+    {
+      "name": "boundary-tight-u64-max-plus-one",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjoxODQ0Njc0NDA3MzcwOTU1MTYxNn0=",
+      "python": "refuse:not-u64"
+    },
+    {
+      "name": "boundary-tight-zero",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjowfQ==",
+      "python": "accept:0"
+    },
+    {
+      "name": "boundary-tight-zero-padded",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjowMH0=",
+      "python": "refuse:not-json"
+    },
+    {
+      "name": "boundary-trailing-second-object",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjo3fXt9",
+      "python": "refuse:not-json"
+    },
+    {
+      "name": "boundary-utf8-bom-then-seven",
+      "bytes_b64": "77u/eyJncmFudF9nZW5lcmF0aW9uIjo3fQ==",
+      "python": "refuse:not-json"
+    },
+    {
+      "name": "m10-array-wrapped",
+      "bytes_b64": "W3siZ3JhbnRfZ2VuZXJhdGlvbiI6IDd9XQo=",
+      "python": "refuse:not-an-object"
+    },
+    {
+      "name": "m10-legal-document-spaced",
+      "bytes_b64": "ICB7CiAgImdyYW50X2dlbmVyYXRpb24iICA6ICA3Cn0K",
+      "python": "accept:7"
+    },
+    {
+      "name": "m10-repeat-any-name-twice",
+      "bytes_b64": "eyJleHRyYSI6IDEsICJleHRyYSI6IDJ9Cg==",
+      "python": "refuse:repeated-member"
+    },
+    {
+      "name": "m10-repeat-echo-probe",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjogNDI0MjQyLCAiZ3JhbnRfZ2VuZXJhdGlvbiI6IDQyNDI0M30K",
+      "python": "refuse:repeated-member"
+    },
+    {
+      "name": "m10-repeat-identical-twins",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjogMSwgImdyYW50X2dlbmVyYXRpb24iOiAxfQo=",
+      "python": "refuse:repeated-member"
+    },
+    {
+      "name": "m10-repeat-negative-zero-then-two",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjogLTAsICJncmFudF9nZW5lcmF0aW9uIjogMn0K",
+      "python": "refuse:not-u64"
+    },
+    {
+      "name": "m10-repeat-seven-then-two",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjogNywgImdyYW50X2dlbmVyYXRpb24iOiAyfQo=",
+      "python": "refuse:repeated-member"
+    },
+    {
+      "name": "m10-repeat-two-then-negative-zero",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjogMiwgImdyYW50X2dlbmVyYXRpb24iOiAtMH0K",
+      "python": "refuse:not-u64"
+    },
+    {
+      "name": "m10-repeat-two-then-seven",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjogMiwgImdyYW50X2dlbmVyYXRpb24iOiA3fQo=",
+      "python": "refuse:repeated-member"
+    },
+    {
+      "name": "m10-stowaway-case-twist",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjogNywgIkdyYW50X0dlbmVyYXRpb24iOiA4fQo=",
+      "python": "refuse:unknown-member"
+    },
+    {
+      "name": "m10-stowaway-echo-probe",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjogNywgImV4dHJhIjogNDI0MjQyfQo=",
+      "python": "refuse:unknown-member"
+    },
+    {
+      "name": "m10-stowaway-leading",
+      "bytes_b64": "eyJleHRyYSI6IDEsICJncmFudF9nZW5lcmF0aW9uIjogN30K",
+      "python": "refuse:unknown-member"
+    },
+    {
+      "name": "m10-stowaway-no-generation-at-all",
+      "bytes_b64": "eyJleHRyYSI6IDF9Cg==",
+      "python": "refuse:unknown-member"
+    },
+    {
+      "name": "m10-stowaway-trailing",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjogNywgImV4dHJhIjogMX0K",
+      "python": "refuse:unknown-member"
+    },
+    {
+      "name": "m14-invalid-byte-after-document",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjo3ff8=",
+      "python": "refuse:not-utf8"
+    },
+    {
+      "name": "m14-invalid-byte-before-document",
+      "bytes_b64": "/3siZ3JhbnRfZ2VuZXJhdGlvbiI6N30=",
+      "python": "refuse:not-utf8"
+    },
+    {
+      "name": "m14-lone-invalid-byte",
+      "bytes_b64": "/w==",
+      "python": "refuse:not-utf8"
+    },
+    {
+      "name": "m15-array-value",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjpbN119Cg==",
+      "python": "refuse:not-u64"
+    },
+    {
+      "name": "m15-nested-object-value",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjp7Im4iOjd9fQo=",
+      "python": "refuse:not-u64"
+    },
+    {
+      "name": "m15-nested-ratchet-value",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjp7ImdyYW50X2dlbmVyYXRpb24iOjd9fQo=",
+      "python": "refuse:not-u64"
+    },
+    {
+      "name": "m9-json-extension-infinity",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjogSW5maW5pdHl9Cg==",
+      "python": "refuse:not-u64"
+    },
+    {
+      "name": "m9-json-extension-minus-infinity",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjogLUluZmluaXR5fQo=",
+      "python": "refuse:not-u64"
+    },
+    {
+      "name": "m9-json-extension-nan",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjogTmFOfQo=",
+      "python": "refuse:not-u64"
+    },
+    {
+      "name": "m9-lexical-canonical-seven",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjogN30K",
+      "python": "accept:7"
+    },
+    {
+      "name": "m9-lexical-canonical-zero",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjogMH0K",
+      "python": "accept:0"
+    },
+    {
+      "name": "m9-lexical-exponent",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjogMWUyfQo=",
+      "python": "refuse:not-u64"
+    },
+    {
+      "name": "m9-lexical-leading-plus",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjogKzF9Cg==",
+      "python": "refuse:not-json"
+    },
+    {
+      "name": "m9-lexical-negative-one",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjogLTF9Cg==",
+      "python": "refuse:not-u64"
+    },
+    {
+      "name": "m9-lexical-negative-zero",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjogLTB9Cg==",
+      "python": "refuse:not-u64"
+    },
+    {
+      "name": "m9-lexical-u64-max",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjogMTg0NDY3NDQwNzM3MDk1NTE2MTV9Cg==",
+      "python": "accept:18446744073709551615"
+    },
+    {
+      "name": "m9-lexical-u64-max-plus-one",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjogMTg0NDY3NDQwNzM3MDk1NTE2MTZ9Cg==",
+      "python": "refuse:not-u64"
+    },
+    {
+      "name": "m9-lexical-zero-padded",
+      "bytes_b64": "eyJncmFudF9nZW5lcmF0aW9uIjogMDB9Cg==",
+      "python": "refuse:not-json"
+    }
+  ]
+}

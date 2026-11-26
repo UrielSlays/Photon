@@ -1,0 +1,12 @@
+# Photon workspace. The engine crate `aruna` stays sync + lean (rusqlite + serde only, no async
+# runtime); the live JMAP transport lives in a SEPARATE crate so the HTTP/TLS/async dependency tree
+# is compile-isolated from the engine (3-seat council, 2026-06-24: separate crate, not a feature —
+# Cargo feature unification is additive and would leak the deps into aruna).
+[workspace]
+resolver = "2"
+members = ["crates/aruna", "crates/aruna-jmap", "crates/aruna-gmail"]
+# The pre-existing Tauri app scaffold is a standalone package with its own (heavy) dep tree — kept
+# OUT of the engine workspace so it builds independently and never pulls Tauri into the lean engine
+# build. Without this exclude, cargo commands in `src-tauri` fail "believes it's in a workspace when
+# it's not" (codex CLI P1, 2026-06-25).
+exclude = ["src-tauri"]

@@ -1,0 +1,9 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Photon surface v1: the main window gets the minimum core permissions and nothing else. `opener:default` is dropped with the plugin (#66 design §2 S3, the CAPABILITY fold); any addition here widens the IPC surface and is a reviewed change, not an edit.",
+  "windows": ["main"],
+  "permissions": [
+    "core:default"
+  ]
+}

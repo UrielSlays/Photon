@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="/src/styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Photon</title>
+    <script type="module" src="/src/main.ts" defer></script>
+  </head>
+
+  <body>
+    <div id="banner-region" class="banner-region" role="alert" aria-live="assertive"></div>
+
+    <header id="status-bar" class="status-bar" aria-label="session status"></header>
+
+    <main class="app-body">
+      <section id="list-scroll" class="list-scroll" aria-label="inbox">
+        <div id="list-inner" class="list-inner"></div>
+      </section>
+
+      <aside id="reading-pane" class="reading-pane" aria-label="reading pane"></aside>
+    </main>
+
+    <footer id="freshness-footer" class="freshness-footer" aria-label="freshness"></footer>
+
+    <section id="plan-review" class="plan-review" aria-label="plan review"></section>
+
+    <div id="toast-region" class="toast-region" aria-live="polite"></div>
+  </body>
+</html>

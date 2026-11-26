@@ -1,0 +1,1 @@
+{"error":{"code":403,"details":[{"@type":"type.googleapis.com/google.rpc.ErrorInfo","domain":"googleapis.com","reason":"ACCESS_TOKEN_SCOPE_INSUFFICIENT"}],"errors":[{"domain":"global","reason":"insufficientPermissions"}],"status":"PERMISSION_DENIED"},"status":403}

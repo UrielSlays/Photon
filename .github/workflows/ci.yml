@@ -1,0 +1,256 @@
+# Photon CI.
+#
+# Per-PR (ready PRs) and main pushes: a lean Ubuntu-only gate (tests, clippy, docs,
+# frontend build, Tauri shell build + tests). Weekly (Mondays 06:00 UTC) and on manual
+# dispatch: the full Windows/macOS/Linux matrix plus the Tauri app-shell link builds.
+# Mac and Linux remain supported platforms; their full proof runs at weekly cadence
+# rather than on every push.
+#
+# Conventions: --locked on every Cargo invocation (a stale lockfile fails the build),
+# the app shell is built (not just checked) so the linker runs, and env-gated lanes
+# that cannot run in cloud CI emit a visible warning instead of skipping silently.
+
+name: CI
+
+on:
+  # push runs ONLY on main (post-merge). Feature-branch pushes are covered by the
+  # pull_request trigger — running both double-fires every check per PR.
+  push:
+    branches: ["main"]
+    paths:
+      - "**"
+      - "!docs/**"
+      # Root-level housekeeping files never change what ships.
+      - "!.gitignore"
+      - "!*.md"
+      # Captured live-drill evidence is load-bearing, not docs: the suite's three-way
+      # bind test hashes these bytes, so a capture/manifest-only change must still
+      # run CI or digest drift merges unexecuted. Later patterns win — this re-includes.
+      - "docs/evidence/**"
+  pull_request:
+    branches: ["**"]
+    # ready_for_review is NOT a default activity type — it must be explicit, or
+    # marking a draft ready would fire nothing and the draft-diet would never lift.
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - "**"
+      - "!docs/**"
+      # Root-level housekeeping files never change what ships.
+      - "!.gitignore"
+      - "!*.md"
+      # Same re-include as the push trigger: evidence bytes are load-bearing.
+      - "docs/evidence/**"
+  # The weekly run: the full 3-OS matrix (Mondays 06:00 UTC) + on demand.
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  # The event name is part of the group: schedule/dispatch runs on main share
+  # github.ref with main pushes, so without it an unrelated push would cancel the
+  # whole six-job weekly run, and a weekly run could cancel the per-push gate.
+  # Runs of the same kind still supersede each other.
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ---- Per-PR gate: every ready PR + every main push. Ubuntu only.
+  gate-linux:
+    name: gate (ubuntu, per-PR lane)
+    # Draft PRs are skipped: the gate fires once, at ready-for-review, on the final
+    # tree. It does not run on schedule/dispatch events (the matrix job below owns those).
+    if: >-
+      (github.event_name == 'push') ||
+      (github.event_name == 'pull_request' && github.event.pull_request.draft == false)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Mint-helper semantic matrix, run explicitly: the Rust suite's test for it skips
+      # with a note when no interpreter exists, and libtest swallows stderr on passing
+      # tests, so CI coverage must not ride that invisible path. This step is the visible
+      # one: a python-less runner fails here, loudly, while interpreter absence still
+      # never fails the Rust test.
+      - name: Mint-helper self-test (W6 matrix, explicit)
+        run: python3 scripts/gmail_drill_mint.py --self-test
+
+      - name: Rust toolchain (stable)
+        run: |
+          rustup update --no-self-update stable
+          rustup default stable
+          rustc --version
+
+      # --locked on every Cargo invocation: a PR that edits a Cargo.toml but omits
+      # the Cargo.lock update must fail, not silently re-resolve.
+      - name: Test (workspace)
+        run: cargo test --workspace --locked
+
+      - name: Clippy (deny warnings)
+        run: cargo clippy --workspace --all-targets --locked -- -D warnings
+
+      - name: Doc (deny warnings)
+        env:
+          RUSTDOCFLAGS: "-D warnings"
+        run: cargo doc --workspace --no-deps --locked
+
+      # The env-gated live + perf lanes (JMAP live drills, Gmail read-side live drills,
+      # perf floor harness) are not runnable on a bare cloud runner. They must never be
+      # skipped silently. always(): a failed run is exactly when the missing coverage
+      # must still be visible. With PHOTON_GMAIL_IT unset the Gmail drills' in-test skip
+      # message is swallowed by cargo, so this warning is what makes the gap visible.
+      - name: Env-gated lanes NOT executed (skip loudly — #11, #16, #21)
+        if: always()
+        shell: bash
+        run: |
+          echo "::warning title=Env-gated lanes skipped::JMAP live drills (#11), the Gmail read-side live drills (#21, PHOTON_GMAIL_IT unset — owner-attended, real-credential lane) and the PHOTON_PERF floor harness (#16) did NOT execute in this run — no live fixture / credential / quiet host exists in cloud CI. Tracked; this gate covers the hermetic majority only."
+
+  # ---- Weekly matrix: weekly + on-demand only. The full 3-OS proof.
+  gate-matrix:
+    name: gate (${{ matrix.os }}, heartbeat)
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    strategy:
+      # One OS failing must not mask what the other two say about the same tree.
+      fail-fast: false
+      matrix:
+        # ubuntu re-runs here too, deliberately: the weekly run is a self-contained
+        # 3-OS verdict on one tree, not a diff against whenever the per-PR gate last ran.
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Rust toolchain (stable)
+        run: |
+          rustup update --no-self-update stable
+          rustup default stable
+          rustc --version
+
+      - name: Test (workspace)
+        run: cargo test --workspace --locked
+
+      - name: Clippy (deny warnings)
+        run: cargo clippy --workspace --all-targets --locked -- -D warnings
+
+      - name: Doc (deny warnings)
+        env:
+          RUSTDOCFLAGS: "-D warnings"
+        run: cargo doc --workspace --no-deps --locked
+
+      # The skip-loudly contract holds on weekly runs too: gate-linux is skipped on
+      # schedule/dispatch and it owns the other copy of this warning, so without this step
+      # the weekly run would be silent about the three lanes it does not cover.
+      # Emitted once, from the ubuntu leg.
+      - name: Env-gated lanes NOT executed (skip loudly — #11, #16, #21)
+        if: always() && matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          echo "::warning title=Env-gated lanes skipped::JMAP live drills (#11), the Gmail read-side live drills (#21, PHOTON_GMAIL_IT unset — owner-attended, real-credential lane) and the PHOTON_PERF floor harness (#16) did NOT execute in this run — no live fixture / credential / quiet host exists in cloud CI. Tracked; this fleet covers the hermetic majority only."
+
+  # The shipped-app proof: the root workspace deliberately excludes src-tauri
+  # (compile isolation), so this job is what compiles and links the desktop shell
+  # and builds the tsc/vite frontend, per OS.
+  app-shell:
+    name: app-shell (${{ matrix.os }}, heartbeat)
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Tauri v2's Linux prerequisites (webkit2gtk + friends) — preinstalled/system
+      # on the Windows and macOS runners, apt-only on Linux.
+      - name: Linux system dependencies (Tauri)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev
+
+      - name: Rust toolchain (stable)
+        run: |
+          rustup update --no-self-update stable
+          rustup default stable
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Frontend (tsc + vite build)
+        run: |
+          npm ci
+          npm run build
+
+      # cargo build, not check: check skips codegen and the linker, and a linkable
+      # desktop binary per OS is this job's entire purpose. --locked: src-tauri/Cargo.lock
+      # is tracked.
+      - name: Tauri shell (cargo build)
+        run: cargo build --locked --manifest-path src-tauri/Cargo.toml
+
+  # ---- Per-PR shell proof. src-tauri is excluded from the root workspace (compile
+  # isolation), so without this job a PR could merge having never built the desktop
+  # shell or run its test suite until the weekly app-shell run caught it. This job is
+  # app-shell's ubuntu leg, pulled onto the per-PR gate; the Windows/macOS legs stay
+  # on the weekly run to keep per-PR cost low.
+  app-shell-pr:
+    name: app-shell (ubuntu, per-PR lane)
+    # Same as gate-linux: fires on every main push and on every ready (non-draft)
+    # PR event, never on schedule/dispatch (app-shell above owns the full 3-OS run).
+    if: >-
+      (github.event_name == 'push') ||
+      (github.event_name == 'pull_request' && github.event.pull_request.draft == false)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Tauri v2's Linux prerequisites (webkit2gtk + friends) — preinstalled/system
+      # on the Windows and macOS runners, apt-only on Linux.
+      - name: Linux system dependencies (Tauri)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev
+
+      - name: Rust toolchain (stable)
+        run: |
+          rustup update --no-self-update stable
+          rustup default stable
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Frontend deps
+        run: npm ci
+
+      - name: Frontend tests (vitest)
+        run: npm test
+
+      - name: Frontend (tsc + vite build)
+        run: npm run build
+
+      # cargo build, not check: check skips codegen and the linker, and a linkable
+      # desktop binary is the reason this job exists. --locked: src-tauri/Cargo.lock
+      # is tracked.
+      - name: Tauri shell (cargo build)
+        run: cargo build --locked --manifest-path src-tauri/Cargo.toml
+
+      # The shell's test suite runs on every PR, not just the weekly run.
+      - name: Tauri shell (cargo test)
+        run: cargo test --manifest-path src-tauri/Cargo.toml --locked

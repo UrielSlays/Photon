@@ -1,0 +1,7 @@
+# gmail_drill_mint.py is a DIGEST-VERIFIED producer: the mint banks helper_source_sha384
+# over its on-disk bytes, and reviewers compare that against the committed blob
+# (`git show <sha>:scripts/gmail_drill_mint.py`). `core.autocrlf=true` would check it out
+# CRLF while the blob is LF — two different digests for the same reviewed code, the exact
+# PR #50 bot-P1 mismatch class on a line-ending axis. Same pin as the evidence dir
+# (commit 29c519b). Do not remove.
+gmail_drill_mint.py -text

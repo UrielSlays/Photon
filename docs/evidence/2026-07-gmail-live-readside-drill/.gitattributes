@@ -1,0 +1,11 @@
+# BANKED EVIDENCE — BYTE-IMMUTABLE. Do not remove.
+#
+# These files' SHA-384 digests are load-bearing (issue #51): they are recorded in the run manifest, embedded
+# in the corpus fixtures in crates/aruna-gmail/tests/live_readside.rs, and cited in the design
+# and the README. Git's eol conversion (core.autocrlf=true on Windows, which this repo's owner
+# runs) would rewrite LF to CRLF on checkout and silently change every digest, making the
+# committed evidence unverifiable for the next reader.
+#
+# `-text` disables ALL eol normalization for this directory, on every platform, so the bytes a
+# reader checks out are exactly the bytes the attended run banked.
+* -text

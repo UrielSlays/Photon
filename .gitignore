@@ -1,0 +1,26 @@
+# Rust / Tauri
+target/
+**/*.rs.bk
+
+# Node / web
+node_modules/
+dist/
+.vite/
+*.tsbuildinfo
+test-results/
+
+# Local data, credentials, logs (never commit)
+*.sqlite
+*.sqlite-*
+*.db
+.env
+.env.*
+*.log
+client_secret*.json
+
+# Python
+__pycache__/
+
+# OS
+.DS_Store
+Thumbs.db

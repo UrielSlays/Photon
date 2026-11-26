@@ -1,0 +1,668 @@
+{
+  "a2_inference": null,
+  "a2_observation": null,
+  "attestation": {
+    "bundle_sha384": "9901a4c1cf7558fe8118e8ab026886d5cfa3ee1eff7b74167dd912a8a6150c6718938b6d95bfdd13c2ce9d7a0ee549d5",
+    "denial_token_sha384": null,
+    "denial_token_sha384_banked": false,
+    "effective_denial_scopes": [
+      "https://www.googleapis.com/auth/userinfo.email",
+      "openid"
+    ],
+    "effective_main_scopes": [
+      "https://www.googleapis.com/auth/gmail.modify"
+    ],
+    "expires_at_denial": 1788416959,
+    "expires_at_main": 1788416953,
+    "helper_source_sha384": "766bcd11a701d3ca10a129fa7cce5af08309a4bd593f25f70b3cc485c14a8ba783bd99fb126eae0cd5b133f0dbd06f44",
+    "main_token_sha384": null,
+    "main_token_sha384_banked": false,
+    "minted_at": 1788413360,
+    "same_principal": true,
+    "scope_source_denial": "token_response",
+    "scope_source_main": "token_response"
+  },
+  "banked_at_unix": 1788413999,
+  "capture_digests": [
+    {
+      "capture": "r1_r1_inbox_capture",
+      "sha384": "d94837d01e375238ba8b3dec67779c221b25c39310173a95eab96f12df1c5fdaa0eda5178bb5dc46958597dae32c99b4"
+    },
+    {
+      "capture": "r1_r1_archive_capture",
+      "sha384": "2500e1a12836a356dc980ae8412e4ed1235edf67c17c8aeee5cb8f610334d454269f5496cd23b2104dd0073daa00e764"
+    },
+    {
+      "capture": "r1_r1_trash_capture",
+      "sha384": "e2b828eac924bf753f1aad8de6fb9fdd34b4675bbdb131787d72d0d2a989dcda005e1c69eba3ec6b4fd18a3ca673b15f"
+    },
+    {
+      "capture": "r1_r1_spam_capture",
+      "sha384": "076fc247adb32fb22165cbb228595aacde35dd7b0a7dee5b354cf4f4aeddf0c7fc2a9bf13ec74ac1be78964e216e9875"
+    },
+    {
+      "capture": "r1_r1_draft_capture",
+      "sha384": "6bff73851db7fd912261011a66fd63314f3285927dfa23d0daa4934374184862a67c0fffd159b7394730d2952bcc725a"
+    },
+    {
+      "capture": "r3_denial_envelope",
+      "sha384": "6f942068de5e6e8d39731d7330fbb5d5670d2d3a1ba215cb2ac0370bce0271f16052183cb524c324fd4bff5e8c393636"
+    }
+  ],
+  "clean_tree": true,
+  "clean_tree_proof_porcelain": "",
+  "commit_sha": "ca857c12c806eee5a9ce66c80f0b8e0649b577d7",
+  "design": "docs/superpowers/specs/2026-07-26-gmail-live-readside-proofs-design.md (v5)",
+  "discovery_revision": "20260719",
+  "invocation": "<repo>\\target\\debug\\deps\\live_readside-30c50b672f0bfbb4.exe live_readside_drills --nocapture",
+  "mandatory_proof_ids": [
+    "R1_INBOX",
+    "R1_ARCHIVE",
+    "R1_TRASH",
+    "R1_SPAM",
+    "R1_DRAFT",
+    "R3_SCOPE_403"
+  ],
+  "mode": "closure",
+  "observations": [
+    {
+      "arm": "R1_INBOX",
+      "bracket_after": "134418",
+      "bracket_before": "134418",
+      "probe_labels": {
+        "contains_draft": false,
+        "contains_inbox": true,
+        "contains_spam": false,
+        "contains_trash": false,
+        "count": 3,
+        "encoding": "present"
+      },
+      "retried": false,
+      "sut_outcome": "Placement::Inbox"
+    },
+    {
+      "arm": "R1_ARCHIVE",
+      "bracket_after": "134418",
+      "bracket_before": "134418",
+      "probe_labels": {
+        "contains_draft": false,
+        "contains_inbox": false,
+        "contains_spam": false,
+        "contains_trash": false,
+        "count": 1,
+        "encoding": "present"
+      },
+      "retried": false,
+      "sut_outcome": "Placement::Archive"
+    },
+    {
+      "arm": "R1_TRASH",
+      "bracket_after": "134418",
+      "bracket_before": "134418",
+      "probe_labels": {
+        "contains_draft": false,
+        "contains_inbox": false,
+        "contains_spam": false,
+        "contains_trash": true,
+        "count": 3,
+        "encoding": "present"
+      },
+      "retried": false,
+      "sut_outcome": "probe-witnessed out-of-model message, deterministically refused on the read route with the pinned partition identity"
+    },
+    {
+      "arm": "R1_SPAM",
+      "bracket_after": "134418",
+      "bracket_before": "134418",
+      "probe_labels": {
+        "contains_draft": false,
+        "contains_inbox": false,
+        "contains_spam": true,
+        "contains_trash": false,
+        "count": 3,
+        "encoding": "present"
+      },
+      "retried": false,
+      "sut_outcome": "probe-witnessed out-of-model message, deterministically refused on the read route with the pinned partition identity"
+    },
+    {
+      "arm": "R1_DRAFT",
+      "bracket_after": "134418",
+      "bracket_before": "134418",
+      "probe_labels": {
+        "contains_draft": true,
+        "contains_inbox": false,
+        "contains_spam": false,
+        "contains_trash": false,
+        "count": 1,
+        "encoding": "present"
+      },
+      "retried": false,
+      "sut_outcome": "probe-witnessed out-of-model message, deterministically refused on the read route with the pinned partition identity"
+    },
+    {
+      "arm": "R3",
+      "observation": {
+        "claim_scope": "the denial credential was observed 403 on this route immediately BEFORE and AFTER the SUT's own request, and the SUT refused deterministically with no placement; the SUT REQUEST'S OWN status is not observable through the production surface (residual, design §4.3)",
+        "envelope_capture_sha384": "6f942068de5e6e8d39731d7330fbb5d5670d2d3a1ba215cb2ac0370bce0271f16052183cb524c324fd4bff5e8c393636",
+        "failure_kind": "Deterministic",
+        "normalized": "Unknown",
+        "post_sut_probe_status": 403,
+        "raw_status": 403,
+        "sut_denied_deterministically": true,
+        "sut_yielded_placement": false
+      }
+    }
+  ],
+  "proof_matrix": [
+    {
+      "capture": {
+        "name": "r1_r1_inbox_capture",
+        "sha384": "d94837d01e375238ba8b3dec67779c221b25c39310173a95eab96f12df1c5fdaa0eda5178bb5dc46958597dae32c99b4"
+      },
+      "outcome": "Proved",
+      "proof_id": "R1_INBOX"
+    },
+    {
+      "capture": {
+        "name": "r1_r1_archive_capture",
+        "sha384": "2500e1a12836a356dc980ae8412e4ed1235edf67c17c8aeee5cb8f610334d454269f5496cd23b2104dd0073daa00e764"
+      },
+      "outcome": "Proved",
+      "proof_id": "R1_ARCHIVE"
+    },
+    {
+      "capture": {
+        "name": "r1_r1_trash_capture",
+        "sha384": "e2b828eac924bf753f1aad8de6fb9fdd34b4675bbdb131787d72d0d2a989dcda005e1c69eba3ec6b4fd18a3ca673b15f"
+      },
+      "outcome": "Proved",
+      "proof_id": "R1_TRASH"
+    },
+    {
+      "capture": {
+        "name": "r1_r1_spam_capture",
+        "sha384": "076fc247adb32fb22165cbb228595aacde35dd7b0a7dee5b354cf4f4aeddf0c7fc2a9bf13ec74ac1be78964e216e9875"
+      },
+      "outcome": "Proved",
+      "proof_id": "R1_SPAM"
+    },
+    {
+      "capture": {
+        "name": "r1_r1_draft_capture",
+        "sha384": "6bff73851db7fd912261011a66fd63314f3285927dfa23d0daa4934374184862a67c0fffd159b7394730d2952bcc725a"
+      },
+      "outcome": "Proved",
+      "proof_id": "R1_DRAFT"
+    },
+    {
+      "capture": null,
+      "outcome": "Unavailable(\"search bound reached before exhaustion; no zero-label candidate in the first N results\")",
+      "proof_id": "A2_ENCODING_OBSERVED"
+    },
+    {
+      "capture": {
+        "name": "r3_denial_envelope",
+        "sha384": "6f942068de5e6e8d39731d7330fbb5d5670d2d3a1ba215cb2ac0370bce0271f16052183cb524c324fd4bff5e8c393636"
+      },
+      "outcome": "Proved",
+      "proof_id": "R3_SCOPE_403"
+    },
+    {
+      "capture": {
+        "name": "r3_denial_envelope",
+        "sha384": "6f942068de5e6e8d39731d7330fbb5d5670d2d3a1ba215cb2ac0370bce0271f16052183cb524c324fd4bff5e8c393636"
+      },
+      "outcome": "Proved",
+      "proof_id": "R3_ERRORINFO_CASING"
+    }
+  ],
+  "red_controls": {
+    "identity": "deliberate wrong-expectation control: the R1_INBOX candidate asserted as Archive",
+    "repeat_read": "Ok(Inbox)",
+    "went_red_as_required": true
+  },
+  "sanitizer": {
+    "identity": "sanitize_envelope (crates/aruna-gmail/tests/live_readside.rs)",
+    "source_sha384": "a247875e4107af1c331357dd84fa46ce34669a26e971cdb5b3c0eb8799e39cdf351ff0a4f58df87956fbe4857dd7bb4f"
+  },
+  "slice": "issue-21 read-side live proofs",
+  "toolchain": "rustc 1.96.0 (ac68faa20 2026-05-25)",
+  "w3_request_census": [
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/profile",
+      "query_keys": [
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages",
+      "query_keys": [
+        "q",
+        "includeSpamTrash",
+        "maxResults",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/profile",
+      "query_keys": [
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/profile",
+      "query_keys": [
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages",
+      "query_keys": [
+        "q",
+        "includeSpamTrash",
+        "maxResults",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/profile",
+      "query_keys": [
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/profile",
+      "query_keys": [
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages",
+      "query_keys": [
+        "q",
+        "includeSpamTrash",
+        "maxResults",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/profile",
+      "query_keys": [
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/profile",
+      "query_keys": [
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages",
+      "query_keys": [
+        "q",
+        "includeSpamTrash",
+        "maxResults",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/profile",
+      "query_keys": [
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/profile",
+      "query_keys": [
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages",
+      "query_keys": [
+        "q",
+        "includeSpamTrash",
+        "maxResults",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/profile",
+      "query_keys": [
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages",
+      "query_keys": [
+        "q",
+        "includeSpamTrash",
+        "maxResults",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    },
+    {
+      "host": "gmail.googleapis.com",
+      "method": "GET",
+      "path_shape": "users/me/messages/{id}",
+      "query_keys": [
+        "format",
+        "fields"
+      ]
+    }
+  ],
+  "w3_violations": []
+}

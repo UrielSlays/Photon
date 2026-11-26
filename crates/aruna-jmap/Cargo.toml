@@ -1,0 +1,27 @@
+[package]
+name = "aruna-jmap"
+version = "0.1.0"
+edition = "2021"
+description = "Live HTTP JMAP transport for the Photon engine (aruna). Implements aruna's JmapTransport seam over a hand-rolled thin JMAP surface (reqwest::blocking + serde), isolated from the sync/lean engine crate so HTTP/TLS deps never reach it."
+
+[dependencies]
+# The engine: the JmapTransport seam + the JmapError taxonomy this transport must produce.
+aruna = { path = "../aruna" }
+# Hand-rolled thin JMAP surface (Session, Mailbox/query|get, Email/set). We hand-roll rather than
+# use jmap-client because its SetResponse hides the typed per-record notUpdated[id] map (private
+# field; every public accessor stringifies via to_string_error()), which would destroy aruna's
+# JmapError fidelity — the connector's whole reason to exist. Byte-verified in jmap-client 0.4.2
+# core/set.rs; the rule is typed-path-or-hand-roll. `blocking` = the
+# sync bridge (no tokio in the call path); `rustls-tls` avoids a system OpenSSL dependency.
+reqwest = { version = "0.13", default-features = false, features = ["blocking", "json", "rustls"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[dev-dependencies]
+# The engine's ONE temp-path guard (`aruna::test_temp`), which the
+# `test-support` feature compiles in — test builds only (resolver 2), never the transport itself.
+aruna = { path = "../aruna", features = ["test-support"] }
+# The env-gated live integration test (tests/live_jmap.rs) makes its OWN independent JMAP calls to
+# discover ids and verify mailbox membership over the wire — separate from the transport under test.
+reqwest = { version = "0.13", default-features = false, features = ["blocking", "json", "rustls"] }
+serde_json = "1"

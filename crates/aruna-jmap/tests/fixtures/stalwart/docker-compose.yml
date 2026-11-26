@@ -1,0 +1,24 @@
+# Stalwart JMAP test fixture for Photon's aruna-jmap live integration test.
+#
+# This compose file describes the FINAL running fixture. Bringing it up from a clean slate is NOT a
+# plain `docker compose up` — Stalwart v0.16.10 boots into an interactive bootstrap wizard with no
+# config. Use `./setup.sh` instead, which drives the (scriptable) bootstrap headlessly, seeds a test
+# account + an Archive mailbox + one Inbox message, and leaves this service running on the named
+# volumes. See README.md for the full runbook and the byte-verified facts.
+#
+# Pinned image (never :latest).
+services:
+  stalwart:
+    image: stalwartlabs/stalwart:v0.16.10
+    container_name: stalwart-jmap-fixture
+    restart: "no"
+    ports:
+      - "127.0.0.1:18080:8080"   # HTTP — JMAP + admin (host :18080 off the busy :8080 region; searxng holds :8888->8080)
+      - "127.0.0.1:18443:443"    # HTTPS — unused by the test (the fixture serves JMAP over plain HTTP on 8080)
+    volumes:
+      - photon-stalwart-config:/etc/stalwart
+      - photon-stalwart-data:/var/lib/stalwart
+
+volumes:
+  photon-stalwart-config:
+  photon-stalwart-data:

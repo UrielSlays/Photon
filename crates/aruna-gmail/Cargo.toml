@@ -1,0 +1,28 @@
+[package]
+name = "aruna-gmail"
+version = "0.1.0"
+edition = "2021"
+description = "Live HTTP Gmail transport for the Photon engine (aruna). Implements aruna's GmailTransport seam over a hand-rolled users.messages.modify surface (reqwest::blocking + serde), isolated from the sync/lean engine crate so HTTP/TLS deps never reach it."
+
+[dependencies]
+# The engine: the GmailTransport seam + the GmailError taxonomy this transport must produce.
+aruna = { path = "../aruna" }
+# Hand-rolled thin Gmail surface (one method: users.messages.modify). We hand-roll rather than adopt
+# `google-gmail1` because it is an async (hyper/yup-oauth2) generated client — the workspace rule
+# keeps transports on blocking reqwest with a lean tree — and because the obligation is
+# faithful error-BODY normalization at our OWN taxonomy boundary, which a generated client's error
+# envelope would sit between us and (design S4). `blocking` = the sync bridge (no tokio in the call
+# path); `rustls` avoids a system OpenSSL dependency.
+reqwest = { version = "0.13", default-features = false, features = ["blocking", "json", "rustls"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[dev-dependencies]
+# The engine's ONE temp-path guard (`aruna::test_temp`), which the
+# `test-support` feature compiles in — test builds only (resolver 2), never the transport itself.
+aruna = { path = "../aruna", features = ["test-support"] }
+# sha384 for the read-side live-drill tests ONLY (tests/live_readside.rs): the attestation
+# preflight binding recomputes token digests, and the evidence manifest banks capture digests
+# (SHA-384 by design). Test-only —
+# never enters the production dependency tree.
+sha2 = "0.10"
